@@ -27,6 +27,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
         // jwt token format -> Bearer {token}
+        System.out.println("jwt header :"+ jwt);
 
         if(jwt!= null && jwt.startsWith("Bearer ")){
            jwt = jwt.substring(7); //remover Bearer part
@@ -41,6 +42,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
                 //extract email and role of the incoming req.
                 String email= String.valueOf((claims.get("email")));
+                System.out.println("email = "+email);
                 String authorities= String.valueOf((claims.get("authorities")));
 
                 // ROLE-CUSTOMER, ROLE_ADMIN
@@ -49,7 +51,9 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             }catch (Exception e){
-                throw new BadCredentialsException("token is invalid...!");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid token");
+                return;
             }
 
         }

@@ -26,8 +26,8 @@ public class JwtProvider {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 8400000))
                 .claim("email", auth.getName())
-                .claim("roles", roles) //Use a string key for the claim
-                .signWith(key)
+                .claim("roles", roles)
+                .signWith(key) //Use a string key for the claim
                 .compact();
 
         return jwt;
