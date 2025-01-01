@@ -2,9 +2,11 @@ package com.chamath.TasteTown.Controller;
 
 import com.chamath.TasteTown.Model.Cart;
 import com.chamath.TasteTown.Model.CartItem;
+import com.chamath.TasteTown.Model.User;
 import com.chamath.TasteTown.Request.UpdateCartItemRequest;
 import com.chamath.TasteTown.Request.CartItemRequest;
 import com.chamath.TasteTown.Service.CartService;
+import com.chamath.TasteTown.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    UserService userService;
 
     @PutMapping("/add")
     public ResponseEntity<CartItem> addItemToCart(@RequestBody CartItemRequest req,
@@ -43,14 +48,16 @@ public class CartController {
 
     @PutMapping("/clear")
     public ResponseEntity<Cart> clearCart(@RequestHeader("Authorization") String jwt) throws Exception {
-        Cart cart= cartService.clearCart(jwt);
+        User user= userService.findUserByJwtToken(jwt);
+        Cart cart= cartService.clearCart(user.getId());
 
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @GetMapping()
     public ResponseEntity<Cart> findUserCart(@RequestHeader("Authorization") String jwt) throws Exception {
-        Cart cart= cartService.clearCart(jwt);
+        User user= userService.findUserByJwtToken(jwt);
+        Cart cart= cartService.clearCart(user.getId());
 
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
