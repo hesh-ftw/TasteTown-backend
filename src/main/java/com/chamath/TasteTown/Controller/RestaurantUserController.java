@@ -61,9 +61,27 @@ public class RestaurantUserController {
 
         RestaurantDto fav= restaurantService.addToFavorites(RestId, user);
 
-
-
         return new ResponseEntity<>(fav, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/fav/remove/{restId}")
+    public ResponseEntity<?> removeFromFavourite(@RequestHeader("Authorization") String jwt,
+                                                 @PathVariable Long restId) throws Exception {
+
+            User user = userService.findUserByJwtToken(jwt);
+            restaurantService.removeFromFavourite(restId, user);
+
+            return new ResponseEntity<>("Restaurant removed from favorites.", HttpStatus.OK);
+    }
+
+    @GetMapping("/favourites/{userId}")
+    public ResponseEntity<List<RestaurantDto>> getFavRestaurantsByUserId(@RequestHeader("Authorization") String jwt,
+                                                                         @PathVariable Long userId ) throws Exception {
+        userService.findUserByJwtToken(jwt);
+
+        List<RestaurantDto> getFav= restaurantService.getRestaurantsByUserId(userId);
+
+        return new ResponseEntity<>(getFav,HttpStatus.OK);
     }
 
 
