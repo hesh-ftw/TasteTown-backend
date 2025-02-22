@@ -111,6 +111,21 @@ public class RestaurantServiceImpl implements RestaurantService {
         return dto;
     }
 
+    public void removeFromFavourite(Long resId, User user) throws Exception{
+        Restaurant restaurant= findRestaurantById(resId);
+
+        user.getFavourites().removeIf(r -> r.getId().equals(resId));
+        userRepository.save(user);
+    }
+
+
+    @Override
+    public List<RestaurantDto> getRestaurantsByUserId(Long userId) throws Exception {
+
+        RestaurantDto favourites= userRepository.findFavouritesById(userId);
+        return (List<RestaurantDto>) favourites;
+    }
+
     @Override
     public Restaurant updateRestaurantStatus(Long restId) throws Exception {
         Restaurant restaurant= findRestaurantById(restId);
