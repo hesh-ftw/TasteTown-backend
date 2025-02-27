@@ -25,7 +25,7 @@ public class Order {
     @JsonIgnore
     private Restaurant restaurant;
 
-    private String totalAmount;
+    private Long totalAmount;
 
     private String createdAt;
 
@@ -68,11 +68,11 @@ public class Order {
         this.restaurant = restaurant;
     }
 
-    public String getTotalAmount() {
+    public Long getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(String totalAmount) {
+    public void setTotalAmount(Long totalAmount) {
         this.totalAmount = totalAmount;
     }
 

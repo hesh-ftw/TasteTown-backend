@@ -85,6 +85,9 @@ public class CartServiceImpl implements CartService {
             throw new Exception("Cart item not found or does not belong to this cart");
         }
 
+        // FIX ERROR - Remove the cartItem from the cart's item list before deleting it
+        cart.getItem().remove(cartItem);
+
         cartItemRepository.deleteById(cartItemId);
         cartRepository.save(cart);
 
@@ -93,9 +96,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public float calculateCartTotals(Cart cart) throws Exception {
-        float total=0L;
+        float total=0.0f;
         for(CartItem cartItem: cart.getItem()){
-            total+=cartItem.getFood().getPrice()*cartItem.getQuantity();
+            total+=300+ 0.05*( cartItem.getFood().getPrice()*cartItem.getQuantity()) +
+                    (cartItem.getFood().getPrice()*cartItem.getQuantity());
         }
         return total;
     }
