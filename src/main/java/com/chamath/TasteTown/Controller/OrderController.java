@@ -2,7 +2,9 @@ package com.chamath.TasteTown.Controller;
 import com.chamath.TasteTown.Model.Order;
 import com.chamath.TasteTown.Model.User;
 import com.chamath.TasteTown.Request.OrderRequest;
+import com.chamath.TasteTown.Response.PaymentResponse;
 import com.chamath.TasteTown.Service.OrderService;
+import com.chamath.TasteTown.Service.PaymentService;
 import com.chamath.TasteTown.Service.UserService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +24,20 @@ public class OrderController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    PaymentService paymentService;
+
 
     //endpoints for users
-
-    @PostMapping("create")
-    public ResponseEntity<Order> createOrder(@RequestHeader("Authorization") String jwt,
+    @PostMapping("/create")
+    public ResponseEntity<PaymentResponse> createOrder(@RequestHeader("Authorization") String jwt,
                                              @RequestBody OrderRequest request) throws Exception {
         User user= userService.findUserByJwtToken(jwt);
         Order order= orderService.createOrder(request,user);
-        return new ResponseEntity<>(order, HttpStatus.OK);
+
+        //after placing order, create a link to make payments and return it
+        PaymentResponse res= paymentService.createPaymentLink(order);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/user")
@@ -43,7 +50,7 @@ public class OrderController {
 
     //endpoints for admins(restaurants owners)
 
-    @GetMapping("/admin/res/{id}")
+    @GetMapping("/admin/restaurant/{id}")
     public ResponseEntity<List<Order>> getRestaurantOrderHistory(@PathVariable Long id,
                                                                  @RequestParam(required = false) String order_status,
                                                                  @RequestHeader("Authorization") String jwt) throws Exception {
